@@ -1,0 +1,37 @@
+# Streamlit multipage configuration
+#
+# This file lets us control sidebar labels/order without relying on numeric prefixes.
+# If your Streamlit version doesn’t support pages.toml yet, it will be ignored and
+# Streamlit will fall back to filenames.
+
+[[pages]]
+path = "app.py"
+name = "Predicting March Madness Overview"
+
+[[pages]]
+path = "pages/1_Interactive_Bracket_Builder.py"
+name = "Interactive Bracket Builder"
+
+[[pages]]
+path = "pages/2_Game_By_Game_Explorer.py"
+name = "Game-by-Game Explorer"
+
+[[pages]]
+path = "pages/3_Upset_Finder.py"
+name = "Upset Finder"
+
+[[pages]]
+path = "pages/6_Upset_Portfolio_Builder.py"
+name = "Upset Portfolio Builder"
+
+[[pages]]
+path = "pages/4_Bracket_Optimizer.py"
+name = "Bracket Optimizer"
+
+[[pages]]
+path = "pages/5_Team_Deep_Dive.py"
+name = "Team Deep-Dive"
+
+[[pages]]
+path = "pages/7_Historical_Tournament_Trends.py"
+name = "Historical Tournament Trends"

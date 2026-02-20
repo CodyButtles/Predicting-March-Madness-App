@@ -1,0 +1,18 @@
+# Public app repo should not contain sensitive data
+/Data/
+/Output/
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Virtual envs
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
