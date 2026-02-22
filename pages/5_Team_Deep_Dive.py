@@ -42,17 +42,27 @@ except FileNotFoundError:
 
 @st.cache_data(show_spinner=False)
 def load_raw_team_data(root: Path) -> pd.DataFrame:
-    p = root / "Data" / "Raw_Team_Data.csv"
+    candidates = [
+        root / "Output" / "Raw_Team_Data.csv",
+        root / "Data" / "Raw_Team_Data.csv",
+    ]
     try:
-        if p.exists():
-            # Low-memory read; the file is large.
-            return pd.read_csv(p, low_memory=False)
+        last_err: Exception | None = None
+        for p in candidates:
+            try:
+                if p.exists():
+                    return pd.read_csv(p, low_memory=False)
 
-        # Public deployments may keep sensitive data in a private repo.
-        from mm_app.private_data import read_bytes_maybe_private
+                from mm_app.private_data import read_bytes_maybe_private
 
-        raw_bytes = read_bytes_maybe_private(p)
-        return pd.read_csv(io.BytesIO(raw_bytes), low_memory=False)
+                raw_bytes = read_bytes_maybe_private(p)
+                return pd.read_csv(io.BytesIO(raw_bytes), low_memory=False)
+            except FileNotFoundError as e:
+                last_err = e
+                continue
+
+        tried = ", ".join(p.as_posix() for p in candidates)
+        raise FileNotFoundError(f"Raw_Team_Data.csv not found. Tried: {tried}") from last_err
     except FileNotFoundError:
         raise
     except Exception as e:
@@ -101,7 +111,7 @@ st.dataframe(df, use_container_width=True, hide_index=True)
 
 st.subheader("Raw stat outliers (vs field)")
 st.caption(
-    "Uses `Data/Raw_Team_Data.csv` (raw per-team stats) and compares the selected team to a peer group "
+    "Uses `Output/Raw_Team_Data.csv` (raw per-team stats) and compares the selected team to a peer group "
     "using within-year z-scores and percentiles. This does not depend on model feature importances. "
     "(In this dataset, the peer group is the teams present for that tournament year.)"
 )
