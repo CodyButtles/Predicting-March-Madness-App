@@ -89,12 +89,18 @@ if not teams:
 qa = qp.get("team_a")
 qb = qp.get("team_b")
 
-if qa in teams:
+# IMPORTANT: Don't re-apply query params on every rerun.
+qp_key = (str(qp.get("team_a", "")), str(qp.get("team_b", "")), str(qp.get("year", "")))
+qp_changed = st.session_state.get("gbg_last_qp") != qp_key
+
+if qp_changed and qa in teams:
     st.session_state["gbg_team_a"] = qa
 
 # Only set Team B after Team A is known.
-if qb in teams:
+if qp_changed and qb in teams:
     st.session_state["gbg_team_b"] = qb
+
+st.session_state["gbg_last_qp"] = qp_key
 
 col1, col2 = st.columns(2)
 with col1:
