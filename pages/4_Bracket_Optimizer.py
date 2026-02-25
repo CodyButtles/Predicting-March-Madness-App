@@ -187,6 +187,9 @@ if use_precomputed:
 
 run_clicked = st.button("Run optimizer", type="primary")
 
+# Always define payload to avoid NameError when run_clicked=True.
+payload: dict[str, Any] = {}
+
 
 def _normalize_topk(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
@@ -224,7 +227,7 @@ if (not run_clicked) and (not live_topk):
     except FileNotFoundError:
         payload = {}
 
-if payload and (not run_clicked) and (not live_topk):
+if (not run_clicked) and (not live_topk) and payload:
     st.subheader("Top brackets (precomputed)")
     pre = list(payload.get("brackets", []) or [])
     pre_settings = payload.get("settings", {}) or {}
