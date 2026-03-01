@@ -18,7 +18,7 @@ from mm_app.util import slug_to_display_name
 st.set_page_config(page_title="Team Deep-Dive", layout="wide")
 st.title("Team Deep-Dive")
 
-DEFAULT_PUBLIC_YEAR = 2024
+DEFAULT_PUBLIC_YEAR = 2025
 st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
 year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
 paths = get_output_paths(year)

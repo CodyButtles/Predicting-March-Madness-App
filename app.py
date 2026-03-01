@@ -7,7 +7,7 @@ st.set_page_config(page_title="Predicting March Madness Overview", layout="wide"
 st.title("Predicting March Madness Overview")
 st.caption("Methodology overview and page guide")
 
-DEFAULT_PUBLIC_YEAR = 2024
+DEFAULT_PUBLIC_YEAR = 2025
 
 st.sidebar.number_input(
     "Year",

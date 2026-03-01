@@ -22,11 +22,11 @@ st.caption(
     "Definition: `upset_score = seed_gap * P(underdog wins)` (higher = larger seed-gap-weighted upset severity)."
 )
 
-DEFAULT_PUBLIC_YEAR = 2024
+DEFAULT_PUBLIC_YEAR = 2025
 st.session_state["year"] = DEFAULT_PUBLIC_YEAR
 
-st.session_state.setdefault("year", 2024)
-year = int(st.session_state.get("year", 2024))
+st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
+year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
 paths = get_output_paths(year)
 
 try:

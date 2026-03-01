@@ -19,7 +19,7 @@ from mm_app.util import slug_to_display_name
 st.set_page_config(page_title="Game Explorer", layout="wide")
 st.title("Game-by-Game Probability Explorer")
 
-DEFAULT_PUBLIC_YEAR = 2024
+DEFAULT_PUBLIC_YEAR = 2025
 st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
 
 
