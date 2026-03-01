@@ -133,38 +133,42 @@ except FileNotFoundError:
     st.stop()
 plan = make_plan(bracket_field)
 
-st.subheader("Settings")
-col1, col2, col3 = st.columns(3)
-with col1:
-    n_sims = int(st.number_input("Tournament sims", min_value=200, max_value=50000, value=5000, step=500))
-with col2:
-    n_candidates = int(st.number_input("Candidate brackets", min_value=50, max_value=20000, value=2000, step=250))
-with col3:
-    leverage = float(
-        st.slider(
-            "Leverage (chalk → contrarian)",
-            min_value=0.0,
-            max_value=1.0,
-            value=0.25,
-            step=0.05,
+with st.expander("Settings", expanded=False):
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        n_sims = int(st.number_input("Tournament sims", min_value=200, max_value=50000, value=5000, step=500))
+    with col2:
+        n_candidates = int(st.number_input("Candidate brackets", min_value=50, max_value=20000, value=2000, step=250))
+    with col3:
+        leverage = float(
+            st.slider(
+                "Leverage (chalk → contrarian)",
+                min_value=0.0,
+                max_value=1.0,
+                value=0.25,
+                step=0.05,
+            )
         )
-    )
 
-seed = int(st.number_input("Random seed", min_value=0, max_value=10_000_000, value=7, step=1))
+    seed = int(st.number_input("Random seed", min_value=0, max_value=10_000_000, value=7, step=1))
 
-st.subheader("Top-25 display")
-dc1, dc2, dc3 = st.columns(3)
-with dc1:
-    diversity_mode = st.selectbox(
-        "Champion diversity",
-        options=["None (pure top-K)", "Limit per champion", "Top champions × brackets"],
-        index=1,
+with st.expander("Top-25 display", expanded=False):
+    dc1, dc2, dc3 = st.columns(3)
+    with dc1:
+        diversity_mode = st.selectbox(
+            "Champion diversity",
+            options=["None (pure top-K)", "Limit per champion", "Top champions × brackets"],
+            index=1,
+        )
+    with dc2:
+        max_per_champ = int(
+            st.number_input("Max per champion (if enabled)", min_value=1, max_value=25, value=5, step=1)
+        )
+    with dc3:
+        top_champs = int(st.number_input("Top champions (if enabled)", min_value=1, max_value=25, value=10, step=1))
+    per_champ = int(
+        st.number_input("Brackets per champion (Top champions mode)", min_value=1, max_value=25, value=3, step=1)
     )
-with dc2:
-    max_per_champ = int(st.number_input("Max per champion (if enabled)", min_value=1, max_value=25, value=5, step=1))
-with dc3:
-    top_champs = int(st.number_input("Top champions (if enabled)", min_value=1, max_value=25, value=10, step=1))
-per_champ = int(st.number_input("Brackets per champion (Top champions mode)", min_value=1, max_value=25, value=3, step=1))
 
 mode_map = {
     "None (pure top-K)": "none",

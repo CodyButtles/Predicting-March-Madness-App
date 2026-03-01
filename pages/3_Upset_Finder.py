@@ -23,8 +23,6 @@ st.caption(
 )
 
 DEFAULT_PUBLIC_YEAR = 2025
-st.session_state["year"] = DEFAULT_PUBLIC_YEAR
-
 st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
 year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
 paths = get_output_paths(year)

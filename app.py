@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import streamlit as st
 
+from mm_app.private_data import list_available_output_years
+
 
 st.set_page_config(page_title="Predicting March Madness Overview", layout="wide")
 st.title("Predicting March Madness Overview")
@@ -9,14 +11,23 @@ st.caption("Methodology overview and page guide")
 
 DEFAULT_PUBLIC_YEAR = 2025
 
-st.sidebar.number_input(
+PUBLIC_YEARS = list_available_output_years()
+if not PUBLIC_YEARS:
+    PUBLIC_YEARS = [DEFAULT_PUBLIC_YEAR]
+
+if DEFAULT_PUBLIC_YEAR not in PUBLIC_YEARS:
+    DEFAULT_PUBLIC_YEAR = max(PUBLIC_YEARS)
+
+st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
+if int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR)) not in PUBLIC_YEARS:
+    st.session_state["year"] = DEFAULT_PUBLIC_YEAR
+
+st.sidebar.selectbox(
     "Year",
-    min_value=DEFAULT_PUBLIC_YEAR,
-    max_value=DEFAULT_PUBLIC_YEAR,
-    value=DEFAULT_PUBLIC_YEAR,
-    step=1,
+    options=PUBLIC_YEARS,
+    index=PUBLIC_YEARS.index(int(st.session_state["year"])),
+    key="year",
 )
-st.session_state["year"] = DEFAULT_PUBLIC_YEAR
 
 st.subheader("Modeling methodology (high level)")
 st.markdown(

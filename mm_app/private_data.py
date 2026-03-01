@@ -118,3 +118,93 @@ def read_bytes_maybe_private(local_path: Path) -> bytes:
 
 def read_text_maybe_private(local_path: Path, *, encoding: str = "utf-8") -> str:
     return read_bytes_maybe_private(local_path).decode(encoding)
+
+
+def _list_local_output_years(*, root: Path | None = None) -> list[int]:
+    try:
+        from .paths import find_repo_root
+
+        repo_root = (root or find_repo_root()).resolve()
+    except Exception:
+        repo_root = (root or Path.cwd()).resolve()
+
+    output_dir = repo_root / "Output"
+    if not output_dir.exists():
+        return []
+
+    years: list[int] = []
+    for child in output_dir.iterdir():
+        if not child.is_dir():
+            continue
+        name = child.name.strip()
+        if name.isdigit():
+            try:
+                years.append(int(name))
+            except Exception:
+                continue
+    return sorted(set(years))
+
+
+def _list_remote_output_years(*, cfg: PrivateRepoConfig) -> list[int]:
+    import requests
+
+    url = f"https://api.github.com/repos/{cfg.repo}/contents/Output"
+    headers = {
+        "Authorization": f"Bearer {cfg.token}",
+        "Accept": "application/vnd.github+json",
+    }
+    resp = requests.get(url, headers=headers, params={"ref": cfg.ref}, timeout=60)
+    if resp.status_code != 200:
+        return []
+
+    try:
+        payload = resp.json()
+    except Exception:
+        return []
+
+    if not isinstance(payload, list):
+        return []
+
+    years: list[int] = []
+    for item in payload:
+        try:
+            if not isinstance(item, dict):
+                continue
+            if item.get("type") != "dir":
+                continue
+            name = str(item.get("name", "")).strip()
+            if not name.isdigit():
+                continue
+            years.append(int(name))
+        except Exception:
+            continue
+
+    return sorted(set(years))
+
+
+def _list_available_output_years_cached(repo: str, ref: str, token: str) -> list[int]:
+    return _list_remote_output_years(cfg=PrivateRepoConfig(repo=repo, ref=ref, token=token))
+
+
+if st is not None:
+    _list_available_output_years_cached = st.cache_data(show_spinner=False)(_list_available_output_years_cached)  # type: ignore[misc]
+
+
+def list_available_output_years(*, root: Path | None = None) -> list[int]:
+    """Return available tournament years based on Output/<year>/ directories.
+
+    Order of operations:
+    1) Prefer local filesystem scan (works for private repo / local dev).
+    2) If no local years are found, attempt to list the private repo's Output/ directory
+       via GitHub Contents API (works for Streamlit Cloud public deployments).
+    """
+
+    local_years = _list_local_output_years(root=root)
+    if local_years:
+        return local_years
+
+    cfg = _get_private_repo_config()
+    if cfg is None:
+        return []
+
+    return _list_available_output_years_cached(cfg.repo, cfg.ref, cfg.token)
