@@ -48,10 +48,9 @@ def render_year_sidebar(*, default_year: int, label: str = "Year") -> int:
         key="year",
     )
 
-    # Keep the return value and session state aligned and normalized.
+    # IMPORTANT: Do not write to st.session_state["year"] after the widget
+    # is instantiated. The widget owns that key for this run.
     try:
-        selected_year = int(selected)
+        return int(selected)
     except Exception:
-        selected_year = int(default_year)
-    st.session_state["year"] = selected_year
-    return selected_year
+        return int(default_year)
