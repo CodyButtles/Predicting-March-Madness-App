@@ -2,7 +2,13 @@ from __future__ import annotations
 
 import streamlit as st
 
-from mm_app.private_data import list_available_output_years
+try:
+    from mm_app.private_data import list_available_output_years
+except ImportError:
+    # Defensive fallback: if Streamlit Cloud is temporarily running an older
+    # revision of mm_app/private_data.py, keep the app bootable.
+    def list_available_output_years(*, root=None):  # type: ignore[no-redef]
+        return []
 
 
 st.set_page_config(page_title="Predicting March Madness Overview", layout="wide")
