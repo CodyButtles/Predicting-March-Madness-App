@@ -17,23 +17,9 @@ st.caption("Methodology overview and page guide")
 
 DEFAULT_PUBLIC_YEAR = 2025
 
-PUBLIC_YEARS = list_available_output_years()
-if not PUBLIC_YEARS:
-    PUBLIC_YEARS = [DEFAULT_PUBLIC_YEAR]
+from mm_app.year_ui import render_year_sidebar
 
-if DEFAULT_PUBLIC_YEAR not in PUBLIC_YEARS:
-    DEFAULT_PUBLIC_YEAR = max(PUBLIC_YEARS)
-
-st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
-if int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR)) not in PUBLIC_YEARS:
-    st.session_state["year"] = DEFAULT_PUBLIC_YEAR
-
-st.sidebar.selectbox(
-    "Year",
-    options=PUBLIC_YEARS,
-    index=PUBLIC_YEARS.index(int(st.session_state["year"])),
-    key="year",
-)
+year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 
 st.subheader("Modeling methodology (high level)")
 st.markdown(

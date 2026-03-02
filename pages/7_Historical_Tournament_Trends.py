@@ -19,6 +19,11 @@ st.caption(
     "Uses historical tournament game results (with seeds) to compute seed-vs-seed win rates and upset rates."
 )
 
+from mm_app.year_ui import render_year_sidebar
+
+DEFAULT_PUBLIC_YEAR = 2025
+_ = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
+
 
 @st.cache_data(show_spinner=False)
 def _load_historical_seed_results_agg() -> pd.DataFrame:

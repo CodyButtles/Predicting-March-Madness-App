@@ -17,14 +17,14 @@ from mm_app.optimizer import (
     simulate_many,
 )
 from mm_app.util import slug_to_display_name
+from mm_app.year_ui import render_year_sidebar
 
 
 st.set_page_config(page_title="Bracket Optimizer", layout="wide")
 st.title("Simulation-Based Bracket Optimizer")
 
 DEFAULT_PUBLIC_YEAR = 2025
-st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
-year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
+year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 paths = get_output_paths(year)
 
 st.caption(

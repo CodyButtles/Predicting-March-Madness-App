@@ -13,6 +13,7 @@ from mm_app.load import load_bracket_field, load_matchup_probs
 from mm_app.paths import get_output_paths
 from mm_app.probs import get_matchup_probability
 from mm_app.util import slug_to_display_name
+from mm_app.year_ui import render_year_sidebar
 
 
 st.set_page_config(page_title="Upset Finder", layout="wide")
@@ -23,8 +24,7 @@ st.caption(
 )
 
 DEFAULT_PUBLIC_YEAR = 2025
-st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
-year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
+year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 paths = get_output_paths(year)
 
 try:

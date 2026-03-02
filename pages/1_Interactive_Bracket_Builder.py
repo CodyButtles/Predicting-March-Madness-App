@@ -5,6 +5,7 @@ import streamlit as st
 from mm_app.component import render_bracket_builder
 from mm_app.load import load_advancement_probs, load_bracket_field, load_matchup_probs
 from mm_app.paths import get_output_paths
+from mm_app.year_ui import render_year_sidebar
 
 
 st.set_page_config(page_title="Bracket Builder", layout="wide")
@@ -12,7 +13,7 @@ st.title("Interactive Bracket Builder")
 st.caption("Click a team to advance; hover for round-by-round odds")
 
 DEFAULT_PUBLIC_YEAR = 2025
-st.session_state.setdefault("year", DEFAULT_PUBLIC_YEAR)
+year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 
 with st.expander("What does “conf %” mean?", expanded=False):
         st.markdown(
@@ -28,7 +29,6 @@ This is **not** a statistical uncertainty estimate; it’s just “distance from
                 """
         )
 
-year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
 paths = get_output_paths(year)
 
 try:
