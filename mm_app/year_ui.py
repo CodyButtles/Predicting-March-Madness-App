@@ -41,11 +41,17 @@ def render_year_sidebar(*, default_year: int, label: str = "Year") -> int:
         current = default_year
         st.session_state["year"] = default_year
 
-    st.sidebar.selectbox(
+    selected = st.sidebar.selectbox(
         label,
         options=years,
         index=years.index(int(current)),
         key="year",
     )
 
-    return int(st.session_state["year"])
+    # Keep the return value and session state aligned and normalized.
+    try:
+        selected_year = int(selected)
+    except Exception:
+        selected_year = int(default_year)
+    st.session_state["year"] = selected_year
+    return selected_year
