@@ -61,11 +61,7 @@ def _flip_teams_callback(*, year: int) -> None:
     _set_query_params(team_a=str(b), team_b=str(a), year=str(year))
 
 qp = _get_query_params()
-if qp.get("year") and str(qp.get("year")).isdigit():
-    # Public deployment is pinned to a single year.
-    # Ignore arbitrary querystring overrides to avoid missing artifact errors.
-    if int(qp["year"]) == DEFAULT_PUBLIC_YEAR:
-        st.session_state["year"] = DEFAULT_PUBLIC_YEAR
+
 
 year = int(st.session_state.get("year", DEFAULT_PUBLIC_YEAR))
 paths = get_output_paths(year)
