@@ -112,8 +112,21 @@
 
   function moveTip(e) {
     const pad = 14;
-    tip.style.left = e.clientX + pad + 'px';
-    tip.style.top = e.clientY + pad + 'px';
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const tw = tip.offsetWidth  || 220;
+    const th = tip.offsetHeight || 180;
+
+    // Flip horizontally if the tooltip would overflow the right edge
+    let left = e.clientX + pad;
+    if (left + tw > vw) left = e.clientX - pad - tw;
+
+    // Flip vertically if the tooltip would overflow the bottom edge
+    let top = e.clientY + pad;
+    if (top + th > vh) top = e.clientY - pad - th;
+
+    tip.style.left = Math.max(0, left) + 'px';
+    tip.style.top  = Math.max(0, top)  + 'px';
   }
 
   function showTip(e) {
