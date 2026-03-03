@@ -3,6 +3,15 @@
   const root = document.getElementById('mm-root');
   if (!payload || !root) return;
 
+  // ── Dark-mode detection ──
+  function detectDarkMode() {
+    if (payload.theme === 'dark') return true;
+    if (payload.theme === 'light') return false;
+    // "auto" / unset → fall back to OS preference
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  if (detectDarkMode()) root.classList.add('mm-dark');
+
   // Ask Streamlit to resize this iframe to better use vertical space.
   // This helps avoid large blank space below when the browser zoom changes.
   function requestFrameHeight(px) {

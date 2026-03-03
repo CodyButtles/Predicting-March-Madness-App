@@ -3,9 +3,19 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import streamlit as st
 import streamlit.components.v1 as components
 
 from .bracket import build_round1_games
+
+
+def _detect_streamlit_theme() -> str:
+    """Return 'dark', 'light', or 'auto' based on the current Streamlit config."""
+    try:
+        base = st.get_option("theme.base")  # "dark" | "light" | None
+    except Exception:
+        base = None
+    return base if base in ("dark", "light") else "auto"
 
 
 def render_bracket_builder(*, bracket_field: dict, advancement_probs: dict, matchup_probs: dict | None, year: int) -> None:
@@ -27,6 +37,7 @@ def render_bracket_builder(*, bracket_field: dict, advancement_probs: dict, matc
         ],
         "adv": advancement_probs,
         "matchup": matchup_probs or {},
+        "theme": _detect_streamlit_theme(),
     }
 
     root = Path(__file__).resolve().parents[1]

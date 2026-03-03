@@ -99,3 +99,19 @@
 .mm-tooltip table { border-collapse: collapse; }
 .mm-tooltip td { padding: 2px 10px 2px 0; white-space: nowrap; }
 .mm-tooltip td:last-child { text-align: right; padding-right: 0; }
+
+/* ── Dark-mode overrides ─────────────────────────────────── */
+#mm-root.mm-dark { color: #e0e0e0; }
+#mm-root.mm-dark .mm-header h2,
+#mm-root.mm-dark .mm-header .meta,
+#mm-root.mm-dark .mm-region h3,
+#mm-root.mm-dark .mm-col-title,
+#mm-root.mm-dark .mm-finalfour h3 { color: #e0e0e0; }
+
+#mm-root.mm-dark .mm-match { border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.04); }
+#mm-root.mm-dark .mm-team:hover { background: rgba(255,255,255,0.10); }
+#mm-root.mm-dark .mm-team.mm-picked { background: rgba(255,255,255,0.15); }
+#mm-root.mm-dark .mm-seed { color: #c0c0c0; }
+#mm-root.mm-dark .mm-name { color: #e0e0e0; }
+#mm-root.mm-dark .mm-metrics { color: #b0b0b0; }
+#mm-root.mm-dark .mm-ff-winner { color: #e0e0e0; }
