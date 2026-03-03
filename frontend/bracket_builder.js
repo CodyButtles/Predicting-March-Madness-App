@@ -45,6 +45,9 @@
   const adv = payload.adv || {};
   const matchup = payload.matchup || {};
 
+  // ── Session persistence key (scoped by year) ──
+  const BRACKET_STORAGE_KEY = 'mm_bracket_v1_' + payload.year;
+
   const ROUND_LABELS = [
     { key: 'R64', label: 'Round of 64' },
     { key: 'R32', label: 'Round of 32' },
@@ -271,6 +274,7 @@
               setWinner(regionState, r, matchIndex, slotIndex);
               rerender();
               renderFinalFour();
+              saveState();
             },
             r,
           );
@@ -316,6 +320,7 @@
       });
     }
 
+    regionState.rerender = rerender;
     rerender();
     return regionEl;
   }
@@ -330,6 +335,11 @@
   const header = document.createElement('div');
   header.className = 'mm-header';
   header.innerHTML = `<h2>Interactive Bracket Builder</h2><div class="meta">Click a team to advance. Hover for round odds.</div>`;
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'mm-reset-btn';
+  resetBtn.textContent = 'Reset Bracket';
+  resetBtn.addEventListener('click', () => resetBracket());
+  header.appendChild(resetBtn);
   root.appendChild(header);
 
   // Single scroll canvas (avoid each region feeling like its own scroll box)
@@ -459,6 +469,7 @@
       if (!t) return;
       ffState.semi1.winner = t.team;
       renderFinalFour();
+      saveState();
     }, null);
     semi1El.classList.add('mm-ff-semi');
 
@@ -467,6 +478,7 @@
       if (!t) return;
       ffState.semi2.winner = t.team;
       renderFinalFour();
+      saveState();
     }, null);
     semi2El.classList.add('mm-ff-semi');
 
@@ -475,6 +487,7 @@
       if (!t) return;
       ffState.champ.winner = t.team;
       renderFinalFour();
+      saveState();
     }, null);
     champEl.classList.add('mm-ff-champ');
 
@@ -494,5 +507,84 @@
     ffGrid.appendChild(champBox);
   }
 
-  renderFinalFour();
+  // ── Bracket persistence (sessionStorage) ──────────────────────────────
+
+  function saveState() {
+    try {
+      const state = { year: payload.year, regions: {}, ff: {} };
+      regionStates.forEach((rs) => {
+        state.regions[rs.key] = rs.rounds.map((round) =>
+          round.map((match) => {
+            if (!match.winner) return null;
+            const idx = match.teams.findIndex((t) => t && t.team === match.winner);
+            return idx >= 0 ? idx : null;
+          }),
+        );
+      });
+      state.ff = {
+        semi1: ffState.semi1.winner || null,
+        semi2: ffState.semi2.winner || null,
+        champ: ffState.champ.winner || null,
+      };
+      sessionStorage.setItem(BRACKET_STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { /* sessionStorage may be unavailable */ }
+  }
+
+  function restoreState() {
+    let raw;
+    try { raw = sessionStorage.getItem(BRACKET_STORAGE_KEY); } catch (e) { /* no-op */ }
+    if (!raw) { renderFinalFour(); return; }
+
+    let state;
+    try { state = JSON.parse(raw); } catch (e) { renderFinalFour(); return; }
+    if (!state || state.year !== payload.year) { renderFinalFour(); return; }
+
+    // 1. Replay region picks round-by-round
+    regionStates.forEach((rs) => {
+      const picks = state.regions && state.regions[rs.key];
+      if (!picks) return;
+      picks.forEach((roundPicks, ri) => {
+        if (!roundPicks) return;
+        roundPicks.forEach((slotIdx, mi) => {
+          if (slotIdx !== null && slotIdx !== undefined && slotIdx >= 0) {
+            setWinner(rs, ri, mi, slotIdx);
+          }
+        });
+      });
+      if (rs.rerender) rs.rerender();
+    });
+
+    // 2. First renderFinalFour: populates FF teams from region champs
+    renderFinalFour();
+
+    // 3. Restore semi winners, then re-render so champ teams are derived
+    if (state.ff) {
+      if (state.ff.semi1) ffState.semi1.winner = state.ff.semi1;
+      if (state.ff.semi2) ffState.semi2.winner = state.ff.semi2;
+    }
+    renderFinalFour();
+
+    // 4. Restore champ winner and final render
+    if (state.ff && state.ff.champ) {
+      ffState.champ.winner = state.ff.champ;
+      renderFinalFour();
+    }
+  }
+
+  function resetBracket() {
+    try { sessionStorage.removeItem(BRACKET_STORAGE_KEY); } catch (e) { /* no-op */ }
+    regionStates.forEach((rs) => {
+      rs.rounds[0].forEach((m) => { m.winner = null; });
+      for (let r = 1; r < rs.rounds.length; r++) {
+        rs.rounds[r] = rs.rounds[r].map(() => ({ teams: [null, null], winner: null }));
+      }
+      if (rs.rerender) rs.rerender();
+    });
+    ffState.semi1 = { teams: [null, null], winner: null };
+    ffState.semi2 = { teams: [null, null], winner: null };
+    ffState.champ = { teams: [null, null], winner: null };
+    renderFinalFour();
+  }
+
+  restoreState();
 })();
