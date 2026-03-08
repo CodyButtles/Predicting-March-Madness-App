@@ -61,3 +61,10 @@ def load_optimizer_sims(year: int) -> dict:
 def load_optimizer_top25(year: int) -> dict:
     paths = get_output_paths(year)
     return _load_json_candidates(paths.optimizer_top25_json_candidates)
+
+
+def load_cluster_data(year: int | None = None) -> dict:
+    """Load cluster_all_teams.json (not year-specific)."""
+    # year is accepted for API consistency but only used for root discovery
+    paths = get_output_paths(year or 2024)
+    return _load_json_with_mtime(paths.cluster_all_teams_json)

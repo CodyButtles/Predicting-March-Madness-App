@@ -95,6 +95,11 @@ class OutputPaths:
     def optimizer_top25_json(self) -> Path:
         return self.optimizer_top25_json_candidates[0]
 
+    # ── Cluster data (not year-specific; lives at Output/ level) ─────
+    @property
+    def cluster_all_teams_json(self) -> Path:
+        return self.output_dir / "cluster_all_teams.json"
+
 
 def get_output_paths(year: int, root: Path | None = None) -> OutputPaths:
     return OutputPaths(year=year, root=(root or find_repo_root()))
