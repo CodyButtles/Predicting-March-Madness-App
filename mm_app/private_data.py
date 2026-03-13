@@ -95,7 +95,9 @@ def _fetch_raw_bytes_cached(repo: str, ref: str, token: str, rel_path: str) -> b
 
 
 if st is not None:
-    _fetch_raw_bytes_cached = st.cache_data(show_spinner=False)(_fetch_raw_bytes_cached)  # type: ignore[misc]
+    # TTL of 1 hour: ensures the app picks up changes to the private repo
+    # (e.g. regenerated matchup_probabilities.json) without requiring a manual reboot.
+    _fetch_raw_bytes_cached = st.cache_data(show_spinner=False, ttl=3600)(_fetch_raw_bytes_cached)  # type: ignore[misc]
 
 
 def read_bytes_maybe_private(local_path: Path) -> bytes:

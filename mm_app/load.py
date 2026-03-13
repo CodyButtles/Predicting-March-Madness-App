@@ -8,10 +8,12 @@ from .paths import get_output_paths
 from .util import read_json
 
 
-@st.cache_data(show_spinner=False)
+@st.cache_data(show_spinner=False, ttl=3600)
 def _read_json_cached(path_str: str, mtime: float) -> dict:
     # mtime is an intentional cache-buster: if the file changes on disk,
     # Streamlit will recompute.
+    # TTL of 1 hour: on Streamlit Cloud, mtime is always 0.0 (file fetched remotely),
+    # so without a TTL the cache would never expire after a private-repo update.
     return read_json(Path(path_str))
 
 
