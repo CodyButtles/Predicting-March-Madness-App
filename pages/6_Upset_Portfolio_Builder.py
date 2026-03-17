@@ -21,7 +21,7 @@ st.caption(
     "Objective: maximize the average P(underdog wins) across the selected upsets."
 )
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 paths = get_output_paths(year)
 

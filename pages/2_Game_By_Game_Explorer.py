@@ -20,7 +20,7 @@ from mm_app.year_ui import render_year_sidebar
 st.set_page_config(page_title="Game Explorer", layout="wide")
 st.title("Game-by-Game Probability Explorer")
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 
 

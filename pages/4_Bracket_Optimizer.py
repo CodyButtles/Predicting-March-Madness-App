@@ -23,7 +23,7 @@ from mm_app.year_ui import render_year_sidebar
 st.set_page_config(page_title="Bracket Optimizer", layout="wide")
 st.title("Simulation-Based Bracket Optimizer")
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 paths = get_output_paths(year)
 

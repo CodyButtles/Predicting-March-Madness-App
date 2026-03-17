@@ -28,7 +28,7 @@ st.caption(
     "positive means the model sees *more* upset potential than history alone would suggest."
 )
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 paths = get_output_paths(year)
 

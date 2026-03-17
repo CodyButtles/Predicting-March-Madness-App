@@ -21,7 +21,7 @@ st.caption(
 
 from mm_app.year_ui import render_year_sidebar
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 _ = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 
 

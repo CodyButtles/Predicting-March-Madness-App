@@ -12,7 +12,7 @@ st.set_page_config(page_title="Bracket Builder", layout="wide")
 st.title("Interactive Bracket Builder")
 st.caption("Click a team to advance; hover for round-by-round odds")
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 
 with st.expander("What does “conf %” mean?", expanded=False):

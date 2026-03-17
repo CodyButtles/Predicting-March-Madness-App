@@ -19,7 +19,7 @@ from mm_app.year_ui import render_year_sidebar
 st.set_page_config(page_title="Team Deep-Dive", layout="wide")
 st.title("Team Deep-Dive")
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 year = render_year_sidebar(default_year=DEFAULT_PUBLIC_YEAR)
 paths = get_output_paths(year)
 

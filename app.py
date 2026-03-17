@@ -15,7 +15,7 @@ st.set_page_config(page_title="Predicting March Madness Overview", layout="wide"
 st.title("Predicting March Madness Overview")
 st.caption("Methodology overview and page guide")
 
-DEFAULT_PUBLIC_YEAR = 2025
+DEFAULT_PUBLIC_YEAR = 2026
 
 from mm_app.year_ui import render_year_sidebar
 
