@@ -142,7 +142,6 @@ sort_col = st.selectbox(
     "Sort by",
     options=sort_options,
     index=sort_options.index("Champion %") if "Champion %" in sort_options else 0,
-    horizontal=True,
     label_visibility="collapsed",
     key="adv_sort_col",
 )
