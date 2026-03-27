@@ -56,7 +56,6 @@ for region_key, entries in bracket_field.items():
 # ── Detect which round columns are present in the data ──────────────────────
 # Round keys expected (ordered), with display labels.
 ALL_ROUND_KEYS = [
-    ("FF",    "First Four %"),
     ("R32",   "Round of 32 %"),
     ("S16",   "Sweet 16 %"),
     ("E8",    "Elite 8 %"),
@@ -156,23 +155,15 @@ st.markdown(
 )
 
 # ── Styled table ─────────────────────────────────────────────────────────────
-def _fmt_pct(val: float) -> str:
-    """Format as '12.3%' or '—' for zero/missing."""
-    if val is None or (isinstance(val, float) and val == 0.0):
-        return "—"
-    return f"{val:.1f}%"
-
-
 pct_col_labels = [lbl for _, lbl in present_rounds]
 
-# Format display copy
+# Keep percentage columns numeric so sorting (both the selectbox and clicking
+# column headers in the dataframe widget) works correctly.
 display_df = filtered.copy()
+# Replace 0.0 with None so empty cells render as blank rather than "0.0%"
 for col in pct_col_labels:
     if col in display_df.columns:
-        display_df[col] = display_df[col].apply(_fmt_pct)
-
-# Seed as string so it doesn't render with commas
-display_df["Seed"] = display_df["Seed"].astype(str)
+        display_df[col] = display_df[col].where(display_df[col] > 0, other=None)
 
 st.dataframe(
     display_df,
@@ -180,10 +171,10 @@ st.dataframe(
     hide_index=True,
     column_config={
         "Team": st.column_config.TextColumn("Team", width="medium"),
-        "Seed": st.column_config.TextColumn("Seed", width="small"),
+        "Seed": st.column_config.NumberColumn("Seed", width="small", format="%d"),
         "Region": st.column_config.TextColumn("Region", width="medium"),
         **{
-            col: st.column_config.TextColumn(col, width="small")
+            col: st.column_config.NumberColumn(col, width="small", format="%.1f%%")
             for col in pct_col_labels
             if col in display_df.columns
         },
@@ -239,7 +230,7 @@ with st.expander("Upset value spotlight (high odds for low seeds)", expanded=Fal
         upset_df_display = upset_df[["Label"] + prob_cols].copy()
         for col in prob_cols:
             if col in upset_df_display.columns:
-                upset_df_display[col] = upset_df_display[col].apply(_fmt_pct)
+                upset_df_display[col] = upset_df_display[col].where(upset_df_display[col] > 0, other=None)
         st.markdown(
             "Top 10 **double-digit or lower seeds** by championship probability — "
             "teams where the model sees meaningful upset potential."
@@ -248,4 +239,11 @@ with st.expander("Upset value spotlight (high odds for low seeds)", expanded=Fal
             upset_df_display.rename(columns={"Label": "Team (Seed — Region)"}),
             use_container_width=True,
             hide_index=True,
+            column_config={
+                **{
+                    col: st.column_config.NumberColumn(col, width="small", format="%.1f%%")
+                    for col in prob_cols
+                    if col in upset_df_display.columns
+                }
+            },
         )
